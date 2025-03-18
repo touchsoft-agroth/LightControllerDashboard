@@ -9,12 +9,30 @@ app = Flask(__name__, static_folder='public')
 def hello_api():
     return jsonify({"message": "Hello, World!"})
 
-# API endpoint with parameters
-@app.route('/api/greet', methods=['POST'])
-def greet_api():
+
+@app.route('/api/auth/login', methods=['POST'])
+def login():
     data = request.get_json()
-    name = data.get('name', 'Guest')
-    return jsonify({"greeting": f"Hello, {name}!"})
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({"error": "Username and password required"}), 400
+
+
+@app.route('/api/power/on', methods=['POST'])
+def turn_on():
+    print("Turning power on")
+
+@app.route('/api/power/off', methods=['POST'])
+def turn_on():
+    print("Turning power off")
+
+@app.route('/api/color', methods=['POST'])
+def set_color():
+    data = request.get_json()
+
+    r = data
 
 
 # Serve static files from the 'public' directory
