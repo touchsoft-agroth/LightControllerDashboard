@@ -25,7 +25,7 @@ def turn_on():
     print("Turning power on")
 
 @app.route('/api/power/off', methods=['POST'])
-def turn_on():
+def turn_off():
     print("Turning power off")
 
 @app.route('/api/color', methods=['POST'])
