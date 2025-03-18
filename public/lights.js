@@ -1,22 +1,23 @@
 // Light control module
 
-// Initialize color preview on page load
 document.addEventListener('DOMContentLoaded', function() {
     updateColorPreview('#ffffff');
 });
 
-// Color preview update
 function updateColorPreview(color) {
     document.getElementById('colorPreview').style.backgroundColor = color;
 }
 
-// Light control functions
 function turnOn() {
-    sendCommand({state: 'on'});
+    fetch('/api/power/on', {
+        method: 'POST'
+    })
 }
 
 function turnOff() {
-    sendCommand({state: 'off'});
+    fetch('/api/power/off', {
+        method: 'POST'
+    })
 }
 
 function setColor() {
@@ -26,69 +27,17 @@ function setColor() {
     const g = parseInt(hexColor.slice(3, 5), 16);
     const b = parseInt(hexColor.slice(5, 7), 16);
 
-    sendCommand({
-        state: 'on',
-        color: {r, g, b}
-    });
-}
-
-function setBlink() {
-    sendCommand({
-        effect: 'blink',
-        state: 'on'
-    });
-}
-
-function setCandlelight() {
-    sendCommand({
-        effect: 'candlelight',
-        state: 'on'
-    });
-}
-
-function setNightlight() {
-    sendCommand({
-        effect: 'nightlight',
-        state: 'on'
-    });
-}
-
-function setDaylight() {
-    sendCommand({
-        effect: 'daylight',
-        state: 'on'
-    });
-}
-
-// API communication function
-function sendCommand(data) {
-    // Get authentication token
-    const token = getAuthToken();
-    if (!token) {
-        alert('You are not authenticated. Please login.');
-        checkAuth();
-        return;
-    }
-
-    // For development, just log the command
-    console.log('Sending command:', data);
-
-    // In production, you would send to your backend like this:
-    /*
-    fetch('/api/lights', {
+    fetch('/api/color', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({
+            colors: {
+                red: r,
+                green: g,
+                blue: b
+            }
+        })
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-    */
 }

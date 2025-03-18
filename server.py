@@ -1,8 +1,7 @@
 from flask import Flask, jsonify, request, send_from_directory
-import ssl
+import light
 
 app = Flask(__name__, static_folder='public')
-
 
 # API endpoint
 @app.route('/api/hello', methods=['GET'])
@@ -19,20 +18,29 @@ def login():
     if not username or not password:
         return jsonify({"error": "Username and password required"}), 400
 
-
 @app.route('/api/power/on', methods=['POST'])
 def turn_on():
     print("Turning power on")
+    light.toggle_power(True)
+    return '', 200
 
 @app.route('/api/power/off', methods=['POST'])
 def turn_off():
     print("Turning power off")
+    light.toggle_power(False)
+    return '', 200
 
 @app.route('/api/color', methods=['POST'])
 def set_color():
     data = request.get_json()
 
-    r = data
+    colors = data.get('colors')
+    r = colors["red"]
+    g = colors["green"]
+    b = colors["blue"]
+
+    light.set_color_rgb(r, g, b)
+    return '', 200
 
 
 # Serve static files from the 'public' directory
@@ -48,9 +56,5 @@ def serve_index():
 
 
 if __name__ == '__main__':
-    # For HTTPS, you'll need SSL certificate and key files
-    # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    # ssl_context.load_cert_chain('cert.pem', 'key.pem')
-
     # Run the server with HTTPS
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    app.run(host='0.0.0.0', port=8000)
